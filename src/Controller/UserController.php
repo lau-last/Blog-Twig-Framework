@@ -13,69 +13,61 @@ use Twig\Error\SyntaxError;
 
 final class UserController extends Controller
 {
+
+
     /**
-     * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
      * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
-    public function showAllUser()
+    public function showAllUser(): void
     {
         if (UserManager::userIsAdmin()) {
-
             $data = [
                 'users' => (new UserManager())->getAllUsers(),
                 'notificationUserManagement' => \App\Manager\Notification::notificationUserManagement()
             ];
-
             $this->render('management-user.twig', $data);
             return;
         }
+
         $this->redirect('/403');
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function setAdmin($id)
+
+    public function setAdmin($id): void
     {
         (new UserManager())->setUserAdmin($id);
         $this->redirect('/user-management');
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function setUser($id)
+
+    public function setUser($id): void
     {
         (new UserManager())->setUserUser($id);
         $this->redirect('/user-management');
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function doDeleteUser($id)
+
+    public function doDeleteUser($id): void
     {
         (new UserManager())->deleteUser($id);
         $this->redirect('/user-management');
+
     }
 
+
     /**
-     * @param $token
-     * @return void
-     * @throws LoaderError
      * @throws RuntimeError
+     * @throws LoaderError
      * @throws SyntaxError
      */
-    public function setValid($token)
+    public function setValid($token): void
     {
-
         $user = (new UserManager())->getUserByToken($token);
-
         if (empty($user)) {
             $data['error'] = 'Unknown token';
             $this->render('connection.twig', $data);
@@ -89,7 +81,6 @@ final class UserController extends Controller
         }
 
         $exp = $user->getExpirationDate();
-
         if ($exp > strtotime('now')) {
             (new UserManager())->setUserValid($token);
             $data['error'] = 'Your account has been successfully validated';
@@ -102,43 +93,42 @@ final class UserController extends Controller
             $data['error'] = 'The link has expired. You have to recreate a registration';
             $this->render('connection.twig', $data);
         }
+
     }
 
+
     /**
-     * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
      * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
-    public function showProfile()
+    public function showProfile(): void
     {
         $sessionEmail = SessionBlog::get('email');
         $userSession = (new UserManager())->getUserInfo($sessionEmail);
-
         if (UserManager::userIsConnected()) {
-
             $data['userSession'] = $userSession;
             $this->render('profile.twig', $data);
             return;
         }
+
         $this->redirect('/403');
+
     }
 
+
     /**
-     * @param $id
-     * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
      * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
-    public function changePassword($id)
+    public function changePassword($id): void
     {
         $request = new Request();
         $password = new FormChangePassword();
         $errors = $password->isValid($request->getPost());
         $sessionEmail = SessionBlog::get('email');
         $userSession = (new UserManager())->getUserInfo($sessionEmail);
-
         if (!empty($errors)) {
             $data = [
                 'errors' => $errors,
@@ -149,11 +139,13 @@ final class UserController extends Controller
         }
 
         (new UserManager())->updateNewPassword($request->getPost(), $id);
-
         $data = [
             'errors' => $errors,
             'userSession' => $userSession,
         ];
         $this->render('profile.twig', $data);
+
     }
+
+
 }

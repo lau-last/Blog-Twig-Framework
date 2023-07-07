@@ -13,45 +13,39 @@ use Core\Session\Session;
 
 final class ArticleManager extends ArticleEntity
 {
+
     private string $author;
 
-    /**
-     * @return string
-     */
+
     public function getAuthor(): string
     {
         return $this->author;
+
     }
 
-    /**
-     * @param string $author
-     * @return $this
-     */
+
     public function setAuthor(string $author): self
     {
         $this->author = $author;
         return $this;
+
     }
 
-    /**
-     * @return string
-     */
+
     public function getUrl(): string
     {
-        return '/articles/' . $this->id;
+        return '/articles/'.$this->id;
+
     }
 
-    /**
-     * @return string
-     */
+
     public function getExtract(): string
     {
-        return \substr($this->content, 0, 250) . '...';
+        return \substr($this->content, 0, 250).'...';
+
     }
 
-    /**
-     * @return array
-     */
+
     public function getArticles(): array
     {
         $data = (new Manager())->fetchAll(
@@ -63,13 +57,12 @@ final class ArticleManager extends ArticleEntity
         foreach ($data as $result) {
             $articles[] = new ArticleManager($result);
         }
+
         return $articles;
+
     }
 
-    /**
-     * @param $id
-     * @return $this
-     */
+
     public function getArticle($id): self
     {
         $dataArticle = (new Manager())->fetch(
@@ -79,13 +72,11 @@ final class ArticleManager extends ArticleEntity
             ['id' => $id[0]]
         );
         return new ArticleManager($dataArticle);
+
     }
 
-    /**
-     * @param array $input
-     * @return void
-     */
-    public function createArticle(array $input)
+
+    public function createArticle(array $input): void
     {
         $userId = SessionBlog::get('id');
         (new Manager())->queryExecute(
@@ -97,14 +88,11 @@ final class ArticleManager extends ArticleEntity
                 'content' => $input['content']
             ]
         );
+
     }
 
-    /**
-     * @param array $input
-     * @param $id
-     * @return void
-     */
-    public function updateArticle(array $input, $id)
+
+    public function updateArticle(array $input, $id): void
     {
         $userId = SessionBlog::get('id');
         (new Manager())->queryExecute(
@@ -119,18 +107,19 @@ final class ArticleManager extends ArticleEntity
                 'id' => $id[0]
             ]
         );
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function deleteArticle($id)
+
+    public function deleteArticle($id): void
     {
         (new Manager())->queryExecute(
             (new Delete('article'))
                 ->where('article.id = :id'),
             ['id' => $id[0]]
         );
+
     }
+
+
 }

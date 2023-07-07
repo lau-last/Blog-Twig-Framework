@@ -14,31 +14,25 @@ use Core\Session\Session;
 
 final class CommentManager extends CommentEntity
 {
+
     private string $author;
 
 
-    /**
-     * @return string
-     */
     public function getAuthor(): string
     {
         return $this->author;
+
     }
 
-    /**
-     * @param string $author
-     * @return $this
-     */
+
     public function setAuthor(string $author): self
     {
         $this->author = $author;
         return $this;
+
     }
 
-    /**
-     * @param $id
-     * @return array
-     */
+
     public function getCommentFromArticle($id): array
     {
         $dataComment = (new Manager())->fetchAll((
@@ -50,15 +44,13 @@ final class CommentManager extends CommentEntity
         foreach ($dataComment as $result) {
             $comments[] = new CommentManager($result);
         }
+
         return $comments;
+
     }
 
-    /**
-     * @param array $input
-     * @param int $articleId
-     * @return void
-     */
-    public function createComment(array $input, int $articleId)
+
+    public function createComment(array $input, int $articleId): void
     {
         $userId = SessionBlog::get('id');
         (new Manager())->queryExecute(
@@ -69,11 +61,10 @@ final class CommentManager extends CommentEntity
                 'article_id' => $articleId
             ]
         );
+
     }
 
-    /**
-     * @return array
-     */
+
     public function getAllComments(): array
     {
         $data = (new Manager())->fetchAll(
@@ -85,14 +76,13 @@ final class CommentManager extends CommentEntity
         foreach ($data as $res) {
             $comment[] = new CommentManager($res);
         }
+
         return $comment;
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function updateCommentSetValid($id)
+
+    public function updateCommentSetValid($id): void
     {
         (new Manager())->queryExecute(
             (new Update('comment AS c'))
@@ -100,19 +90,19 @@ final class CommentManager extends CommentEntity
                 ->where('c.id = :id'),
             ['id' => $id[0]]
         );
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function deleteComment($id)
+
+    public function deleteComment($id): void
     {
         (new Manager())->queryExecute(
             (new Delete('comment'))
                 ->where('comment.id = :id'),
             ['id' => $id[0]]
         );
+
     }
+
 
 }

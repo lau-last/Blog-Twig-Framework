@@ -7,14 +7,11 @@ use App\SessionBlog\SessionBlog;
 
 final class FormConnection
 {
-    /**
-     * @param array $input
-     * @return bool
-     */
+
+
     public function registerSession(array $input): bool
     {
         if (isset($input['email']) && isset($input['password'])) {
-
             $email = trim($input['email']);
             $password = trim($input['password']);
             $userInfo = (new UserManager())->getUserInfo($email);
@@ -27,10 +24,16 @@ final class FormConnection
                     $password = password_hash($password, PASSWORD_BCRYPT);
                     $userInfo->setPassword($password);
                 }
+
                 SessionBlog::init($userInfo);
                 return true;
             }
+
         }
+
         return false;
+
     }
+
+
 }

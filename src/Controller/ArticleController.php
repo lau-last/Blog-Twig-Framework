@@ -13,39 +13,37 @@ use Twig\Error\SyntaxError;
 
 final class ArticleController extends Controller
 {
+
+
     /**
-     * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
      * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
-    public function showAll()
+    public function showAll(): void
     {
         $data['articles'] = (new ArticleManager())->getArticles();
         $data['notificationArticleManagement'] = \App\Manager\Notification::notificationArticleManagement();
-
         $this->render('show-all-articles.twig', $data);
+
     }
 
+
     /**
-     * @param $id
-     * @return void
-     * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws LoaderError
      */
-    public function show($id)
+    public function show($id): void
     {
         $data['article'] = (new ArticleManager())->getArticle($id);
         $data['comments'] = (new CommentManager())->getCommentFromArticle($id);
-
         $this->render('show-article.twig', $data);
+
     }
 
-    /**
-     * @return void
-     */
-    public function postArticle()
+
+    public function postArticle(): void
     {
         $request = new Request();
         (new ArticleManager())->createArticle($request->getPost());
@@ -53,44 +51,40 @@ final class ArticleController extends Controller
 
     }
 
+
     /**
-     * @return void
-     * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws LoaderError
      */
-    public function modifyArticle()
+    public function modifyArticle(): void
     {
         if (UserManager::userIsAdmin()) {
-
             $data['articles'] = (new ArticleManager())->getArticles();
             $data['notificationArticleManagement'] = \App\Manager\Notification::notificationArticleManagement();
-
             $this->render('management-article.twig', $data);
             return;
         }
+
         $this->redirect('/403');
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function doModifyArticle($id)
+
+    public function doModifyArticle($id): void
     {
         $request = new Request();
         (new ArticleManager())->updateArticle($request->getPost(), $id);
         $this->redirect('/article-management');
+
     }
 
-    /**
-     * @param $id
-     * @return void
-     */
-    public function doDeleteArticle($id)
+
+    public function doDeleteArticle($id): void
     {
         (new ArticleManager())->deleteArticle($id);
         $this->redirect('/article-management');
+
     }
 
 

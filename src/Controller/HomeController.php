@@ -9,14 +9,18 @@ use Twig\Error\SyntaxError;
 
 final class HomeController extends Controller
 {
+
+
     /**
-     * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
      * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
-    public function showHome()
+    public function showHome(): void
     {
         $this->render('home.twig');
+
     }
+
+
 }
